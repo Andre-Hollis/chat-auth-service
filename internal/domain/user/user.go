@@ -1,4 +1,4 @@
-package models
+package user
 
 import (
 	"time"
@@ -19,4 +19,8 @@ type UserCreate struct {
 	Email    string `json:"email"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+func (u *User) SetId(_id string) {
+
 }
