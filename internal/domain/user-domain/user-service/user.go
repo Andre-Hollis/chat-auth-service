@@ -1,7 +1,7 @@
 package userservice
 
 import (
-	"github.com/Andre-Hollis/chat-auth-service/internal/domain/user"
+	userdomain "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain"
 	userrepo "github.com/Andre-Hollis/chat-auth-service/internal/infra/user-repo"
 	"github.com/gofiber/fiber/v2"
 )
@@ -10,12 +10,19 @@ type UserService struct {
 	userRepo userrepo.IUserRepo
 }
 
-func (s *UserService) ReadUser() (*user.User, error) {
-	user, err = s.userRepo.FindByID()
-	return
+func (s *UserService) ReadUser(c *fiber.Ctx, id string) (*userdomain.User, error) {
+	user, err := s.userRepo.FindByID(c.Context(), id)
+	if err != nil {
+
+	}
+	return user, err
 }
 
-func (s *UserService) SaveUser(c *fiber.Ctx, user *user.User) (*user.User, error) {
+func (s *UserService) SaveUser(c *fiber.Ctx, user *userdomain.User) (*userdomain.User, error) {
 	id, err := s.userRepo.Save(c.Context(), user)
-	user.SetId()
+	if err != nil {
+
+	}
+	user.SetId(id)
+	return user, err
 }

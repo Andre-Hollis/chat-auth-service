@@ -7,6 +7,6 @@ import (
 )
 
 type IUserRepo interface {
-	Save(ctx context.Context, user *userdomain.User) error
+	Save(ctx context.Context, user *userdomain.User) (string, error)
 	FindByID(ctx context.Context, id string) (*userdomain.User, error)
 }

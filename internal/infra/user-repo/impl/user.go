@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 
 	userdomain "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain"
 	"github.com/google/uuid"
@@ -20,6 +21,25 @@ func NewUserRedisRepo() *UserRepositoryDB {
 			DB:       0,  // use default DB
 		}),
 	}
+}
+
+func (r *UserRepositoryDB) FindByID(ctx context.Context, id string) (*userdomain.User, error) {
+	j, err := r.db.Get(ctx, id).Result()
+
+	u := userdomain.User{}
+
+	if err != nil {
+		return &userdomain.User{}, err
+	}
+
+	err = json.Unmarshal([]byte(j), &u)
+
+	if err != nil {
+		return &userdomain.User{}, err
+	}
+
+	return &u, nil
+
 }
 
 func (r *UserRepositoryDB) Save(ctx context.Context, user *userdomain.User) (string, error) {

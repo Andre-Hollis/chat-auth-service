@@ -5,6 +5,7 @@ import (
 
 	"github.com/Andre-Hollis/chat-auth-service/api"
 	"github.com/Andre-Hollis/chat-auth-service/internal/config"
+	"github.com/Andre-Hollis/chat-auth-service/internal/infra/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,7 +17,7 @@ func main() {
 
 	app := fiber.New()
 
-	user := app.Group("/user")
+	user := app.Group("/user", middleware.AuthMiddleware())
 	user.Post("/", api.CreateUser)
 	user.Get("/:userId", api.ReadUser)
 
