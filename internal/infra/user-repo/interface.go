@@ -3,10 +3,10 @@ package userrepo
 import (
 	"context"
 
-	"github.com/Andre-Hollis/chat-auth-service/internal/domain/user"
+	userdomain "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain"
 )
 
 type IUserRepo interface {
-	Save(ctx context.Context, user *user.User) error
-	FindByID(ctx context.Context, id string) (*user.User, error)
+	Save(ctx context.Context, user *userdomain.User) error
+	FindByID(ctx context.Context, id string) (*userdomain.User, error)
 }

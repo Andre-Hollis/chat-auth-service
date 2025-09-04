@@ -1,22 +1,27 @@
 package user
 
 import (
+	"github.com/Andre-Hollis/chat-auth-service/internal/application/user/dto"
+	"github.com/Andre-Hollis/chat-auth-service/internal/application/user/mappers"
+	userdomain "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain"
+	userservice "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain/user-service"
+
 	"github.com/gofiber/fiber/v2"
 )
 
-type Handler struct {
-	AuthService *auth.Service // injected service from internal/auth
+type UserHandler struct {
+	UserService *userservice.UserService // injected service from internal/auth
 }
 
 // NewHandler returns a new Handler with its dependencies
-func NewHandler(authService *auth.Service) *Handler {
-	return &Handler{
-		AuthService: authService,
+func NewUserHandler(userService *userservice.UserService) *UserHandler {
+	return &UserHandler{
+		UserService: userService,
 	}
 }
 
 // Register handles user registration
-func (h *Handler) Register(c *fiber.Ctx) error {
+func (h *UserHandler) Register(c *fiber.Ctx) error {
 	type request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -36,7 +41,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 }
 
 // Login handles user login
-func (h *Handler) Login(c *fiber.Ctx) error {
+func (h *UserHandler) Login(c *fiber.Ctx) error {
 	type request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -53,4 +58,23 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"token": token})
+}
+
+// Login handles user login
+func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
+	var userCreate dto.UserCreateDTO
+
+	if err := c.BodyParser(&userCreate); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid request payload")
+	}
+
+	user := userdomain.User{
+		Email:        userCreate.Email,
+		Username:     userCreate.Username,
+		PasswordHash: userCreate.Password,
+	}
+
+	h.UserService.SaveUser(c, &user)
+
+	return c.Status(fiber.StatusOK).JSON(mappers.UserToDto(&user))
 }
