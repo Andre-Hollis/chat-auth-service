@@ -10,8 +10,14 @@ type UserService struct {
 	userRepo userrepo.IUserRepo
 }
 
-func (s *UserService) ReadUser(c *fiber.Ctx, id string) (*userdomain.User, error) {
-	user, err := s.userRepo.FindByID(c.Context(), id)
+func NewUserService(userRepo userrepo.IUserRepo) *UserService {
+	return &UserService{
+		userRepo: userRepo,
+	}
+}
+
+func (s *UserService) ReadUser(c *fiber.Ctx, email string) (*userdomain.User, error) {
+	user, err := s.userRepo.ReadUserByEmail(c.Context(), email)
 	if err != nil {
 
 	}

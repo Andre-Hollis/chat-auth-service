@@ -1,8 +1,9 @@
-package user
+package handler
 
 import (
 	"github.com/Andre-Hollis/chat-auth-service/internal/application/user/dto"
 	"github.com/Andre-Hollis/chat-auth-service/internal/application/user/mappers"
+	authservice "github.com/Andre-Hollis/chat-auth-service/internal/domain/auth-domain/auth-service"
 	userdomain "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain"
 	userservice "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain/user-service"
 
@@ -11,6 +12,7 @@ import (
 
 type UserHandler struct {
 	UserService *userservice.UserService // injected service from internal/auth
+	AuthService *authservice.AuthService // injected service from internal/auth
 }
 
 // NewHandler returns a new Handler with its dependencies
@@ -24,6 +26,7 @@ func NewUserHandler(userService *userservice.UserService) *UserHandler {
 func (h *UserHandler) Register(c *fiber.Ctx) error {
 	type request struct {
 		Email    string `json:"email"`
+		Username string `json:"username"`
 		Password string `json:"password"`
 	}
 
@@ -32,7 +35,7 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request payload")
 	}
 
-	user, err := h.AuthService.Register(body.Email, body.Password)
+	user, err := h.AuthService.Register(c, body.Email, body.Password)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
@@ -52,7 +55,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid request payload")
 	}
 
-	token, err := h.AuthService.Login(body.Email, body.Password)
+	token, err := h.AuthService.Login(c.Context(), body.Email, body.Password)
 	if err != nil {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}

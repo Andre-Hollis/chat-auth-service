@@ -7,7 +7,6 @@ import (
 
 func UserToDto(u *userdomain.User) dto.UserDTO {
 	return dto.UserDTO{
-		ID:       u.ID,
 		Email:    u.Email,
 		Username: u.Username,
 	}

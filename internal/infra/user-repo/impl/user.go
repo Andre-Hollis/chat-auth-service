@@ -1,4 +1,4 @@
-package user
+package impl
 
 import (
 	"context"
@@ -23,8 +23,8 @@ func NewUserRedisRepo() *UserRepositoryDB {
 	}
 }
 
-func (r *UserRepositoryDB) FindByID(ctx context.Context, id string) (*userdomain.User, error) {
-	j, err := r.db.Get(ctx, id).Result()
+func (r *UserRepositoryDB) ReadUserByEmail(ctx context.Context, email string) (*userdomain.User, error) {
+	j, err := r.db.Get(ctx, email).Result()
 
 	u := userdomain.User{}
 
@@ -39,7 +39,6 @@ func (r *UserRepositoryDB) FindByID(ctx context.Context, id string) (*userdomain
 	}
 
 	return &u, nil
-
 }
 
 func (r *UserRepositoryDB) Save(ctx context.Context, user *userdomain.User) (string, error) {

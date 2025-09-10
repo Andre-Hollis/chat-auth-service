@@ -4,14 +4,14 @@ import (
 	"strings"
 	"time"
 
-	tokenservice "github.com/Andre-Hollis/chat-auth-service/internal/domain/token/token-service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 var jwtSecret = []byte("your_super_secret_key") // Use env variable in real apps
 
-func AuthMiddleware(tokenService *tokenservice.TokenService) fiber.Handler {
+// JWTMiddleware validates the token and attaches user info to the context
+func JWTMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
@@ -21,6 +21,7 @@ func AuthMiddleware(tokenService *tokenservice.TokenService) fiber.Handler {
 		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			// Validate signing method
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

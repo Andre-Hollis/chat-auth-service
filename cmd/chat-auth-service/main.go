@@ -3,9 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/Andre-Hollis/chat-auth-service/api"
-	"github.com/Andre-Hollis/chat-auth-service/internal/config"
-	"github.com/Andre-Hollis/chat-auth-service/internal/infra/middleware"
+	"github.com/Andre-Hollis/chat-auth-service/api/user"
+	"github.com/Andre-Hollis/chat-auth-service/config"
+	"github.com/Andre-Hollis/chat-auth-service/internal/application/user/handler"
+	userservice "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain/user-service"
+	"github.com/Andre-Hollis/chat-auth-service/internal/infra/user-repo/impl"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,9 +19,11 @@ func main() {
 
 	app := fiber.New()
 
-	user := app.Group("/user", middleware.AuthMiddleware())
-	user.Post("/", api.CreateUser)
-	user.Get("/:userId", api.ReadUser)
+	userRepo := impl.NewUserRedisRepo()
+	userService := userservice.NewUserService(userRepo)
+	h := handler.NewUserHandler(userService)
+
+	user.RegisterUserRoutes(app, h)
 
 	app.Listen(":3000")
 }

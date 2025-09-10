@@ -8,5 +8,5 @@ import (
 
 type IUserRepo interface {
 	Save(ctx context.Context, user *userdomain.User) (string, error)
-	FindByID(ctx context.Context, id string) (*userdomain.User, error)
+	ReadUserByEmail(ctx context.Context, email string) (*userdomain.User, error)
 }
