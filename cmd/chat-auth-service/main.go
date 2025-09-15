@@ -1,10 +1,7 @@
 package main
 
 import (
-	"log"
-
 	"github.com/Andre-Hollis/chat-auth-service/api/user"
-	"github.com/Andre-Hollis/chat-auth-service/config"
 	"github.com/Andre-Hollis/chat-auth-service/internal/application/user/handler"
 	userservice "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain/user-service"
 	"github.com/Andre-Hollis/chat-auth-service/internal/infra/user-repo/impl"
@@ -12,10 +9,10 @@ import (
 )
 
 func main() {
-	config, err := config.LoadConfig("config.json")
-	if err != nil {
-		log.Fatalf("Error loading configuration: %s", err.Error())
-	}
+	// config, err := config.LoadConfig("config.json")
+	// if err != nil {
+	// 	log.Fatalf("Error loading configuration: %s", err.Error())
+	// }
 
 	app := fiber.New()
 

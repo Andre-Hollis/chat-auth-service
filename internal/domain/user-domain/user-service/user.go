@@ -25,10 +25,9 @@ func (s *UserService) ReadUser(c *fiber.Ctx, email string) (*userdomain.User, er
 }
 
 func (s *UserService) SaveUser(c *fiber.Ctx, user *userdomain.User) (*userdomain.User, error) {
-	id, err := s.userRepo.Save(c.Context(), user)
+	_, err := s.userRepo.Save(c.Context(), user)
 	if err != nil {
 
 	}
-	user.SetId(id)
 	return user, err
 }

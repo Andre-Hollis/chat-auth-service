@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	userdomain "github.com/Andre-Hollis/chat-auth-service/internal/domain/user-domain"
-	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -42,15 +41,12 @@ func (r *UserRepositoryDB) ReadUserByEmail(ctx context.Context, email string) (*
 }
 
 func (r *UserRepositoryDB) Save(ctx context.Context, user *userdomain.User) (string, error) {
-	if user.ID == "" {
-		user.ID = uuid.NewString()
-	}
 
-	err := r.db.Set(ctx, user.ID, user, 0).Err()
+	err := r.db.Set(ctx, user.Email, user, 0).Err()
 
 	if err != nil {
 		return "", err
 	}
 
-	return user.ID, err
+	return user.Email, err
 }
